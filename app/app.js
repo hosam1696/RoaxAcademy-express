@@ -25,7 +25,7 @@ mongoose.Promise = global.Promise;
 
 
 // set our environment variable
-app.set('port', process.env.PORT || "3000");
+app.set('port', process.env.PORT || 3000);
 app.set("view engine", "ejs");
 app.set('views', __dirname + "/public/templates");
 
