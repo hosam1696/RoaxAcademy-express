@@ -4,9 +4,13 @@
   "description": "Files for my Building a Website with Node & ExpressJS course on Lynda.com",
   "main": "app/app.js",
   "scripts": {
-      "start" : "node app/app.js",
+      "start" : "fs start",
       "dev:mon": "nodemon app/app.js"
   },
+  "engines": {
+	"node":"7.9.0"
+
+	},
   "author": "Hosam Elnabawy",
   "license": "MIT",
   "dependencies": {
