@@ -4,7 +4,7 @@
   "description": "Files for my Building a Website with Node & ExpressJS course on Lynda.com",
   "main": "app/app.js",
   "scripts": {
-      "start" : "fs start",
+      "start" : "nf start",
       "dev:mon": "nodemon app/app.js"
   },
   "engines": {
