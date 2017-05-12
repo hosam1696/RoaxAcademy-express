@@ -30,7 +30,7 @@ app.set("view engine", "ejs");
 app.set('views', __dirname + "/public/templates");
 
 // set local variables to be accessed in whole th project
-app.locals.jsonData = myData;
+//app.locals.jsonData = myData;
 
 // serve static files and dependencies
 app.use(express.static(__dirname + '/public'));
