@@ -47,7 +47,6 @@ app.use(require('./routes/speaker'));
 app.use(require('./routes/about'));
 app.use(require('./routes/chat'));
 app.use(require('./routes/feedback'));
-app.use(require('./routes/api'));
 app.use(require('./routes/sign'));
 //Api Routes
 app.use('/api', require('./routes/api/feedbacks'));
