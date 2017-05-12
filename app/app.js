@@ -7,7 +7,7 @@ let reload = require('reload');
 let passport = require('passport');
 let cookies = require('cookie-parser');
 
-let myData = require('./data/data.json');
+//let myData = require('./data/data.json');
 let fs = require("fs");
 let app = express();
 let ioserver = require('http').Server(app);
