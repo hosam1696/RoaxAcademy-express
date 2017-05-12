@@ -7,7 +7,7 @@ let reload = require('reload');
 let passport = require('passport');
 let cookies = require('cookie-parser');
 
-//let myData = require('./data/data.json');
+let myData = require('./data/data.json');
 let fs = require("fs");
 let app = express();
 let ioserver = require('http').Server(app);
@@ -30,7 +30,7 @@ app.set("view engine", "ejs");
 app.set('views', __dirname + "/public/templates");
 
 // set local variables to be accessed in whole th project
-//app.locals.jsonData = myData;
+app.locals.jsonData = myData;
 
 // serve static files and dependencies
 app.use(express.static(__dirname + '/public'));
