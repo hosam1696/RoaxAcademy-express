@@ -14,7 +14,7 @@
 console.log(chatBody, chatBody.scrollTop);
 
 	chatBody.scrollTop = 26;*/
-$('#chat-body').scrollTop($('#chat-body').prop('scrollHeight') - $('#chat-body').innerHeight());
+
 var chatBody = document.getElementById('chat-body');
 
 chatBody.scrollTop = chatBody.scrollHeight - chatBody.offsetHeight;
@@ -23,13 +23,14 @@ $(function () {
 	console.log($('#chat-body').prop('scrollHeight'), $('#chat-body').height())
 	$('#chat-body').scrollTop('100px');*/
 
-	
+	$('#chat-body').scrollTop($('#chat-body').prop('scrollHeight') - $('#chat-body').innerHeight());
 
 	$.getJSON('/api/chats').done(function (data) {
 		data.forEach(function(element) {
 			$('#chat-messages').append(
 				'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">'+element.name+'</span></div><div class="message-body"><p>'+element.message+'</p><div class="message-date">'+element.date.toLocaleString().slice(11, 19)+'</div></div></div></li>');
 		}, this);
+		$('#chat-body').scrollTop($('#chat-body').prop('scrollHeight') - $('#chat-body').innerHeight());
 	})
 });
 
