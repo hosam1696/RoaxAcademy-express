@@ -23,7 +23,7 @@ chatBody.scrollTop = chatBody.scrollHeight - chatBody.offsetHeight;
 $(function () {
 
 	var chatSend = $('.chat-message-send');
-	var isName = localStorage.getItem('name');
+	
 
 	$('.chat-message-send:disabled').css('background-color', '#ccc');
 	/*
@@ -67,7 +67,7 @@ $(function () {
 
 
 	//localStorage.removeItem('name');
-	
+	var isName = localStorage.getItem('name');
 	if(isName) {
 		chatSend.attr('disabled', false);
 		$('.chat-message-name').val(isName);
