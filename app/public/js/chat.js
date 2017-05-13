@@ -25,7 +25,7 @@ $(function () {
 	
 	
 
-	$('.chat-message-send:disabled').css('background-color', '#ccc');
+	
 	/*
 	console.log($('#chat-body').prop('scrollHeight'), $('#chat-body').height())
 	$('#chat-body').scrollTop('100px');*/
@@ -42,27 +42,6 @@ $(function () {
 	});
 
 
-	//localStorage.removeItem('name');
-	var isName = localStorage.getItem('name');
-	var chatSend = $('.chat-message-send');
-
-	if(isName) {
-		chatSend.attr('disabled', false);
-		$('.chat-message-name').val(isName);
-		$('.name-checker-found').text(isName);
-		$('.name-checker').fadeOut(0);
-	} else {
-		chatSend.attr('disabled', true);
-		$('#name-checked').fadeOut(0);
-	}
-	$('.chat-message-name').on('keyup', function(e){
-		var name = '';
-		if (e.which == 16) {
-			name = $(this).val();
-		}
-		console.log(name);
-		localStorage.setItem('name', name);
-	});
 
 });
 
@@ -91,8 +70,32 @@ $(function () {
 
 
 
+	$('.chat-message-send:disabled').css({
+		'background-color': '#ccc',
+		'cursor': 'not-allowed'
+	});
 
+	//localStorage.removeItem('name');
+	var isName = localStorage.getItem('name');
+	var chatSend = $('.chat-message-send');
 
+	if(isName) {
+		chatSend.attr('disabled', false);
+		$('.chat-message-name').val(isName);
+		$('.name-checker-found').text(isName);
+		$('.name-checker').fadeOut(0);
+	} else {
+		chatSend.attr('disabled', true);
+		$('#name-checked').fadeOut(0);
+	}
+	$('.chat-message-name').on('keyup', function(e){
+		var name = '';
+		if (e.which == 16) {
+			name = $(this).val();
+		}
+		console.log(name);
+		localStorage.setItem('name', name);
+	});
 	$('.chat-message-send').on('click', function(e){
 		var chatMsg = $('.chat-message-control').val();
 		if(chatMsg && isName) {
@@ -104,7 +107,7 @@ $(function () {
 			$('#chat-body').scrollTop($(this).scrollMaxY);
 			console.log($('#chat-body').scrollTop());
 			$('.chat-message-control').val('');
-			$.post('http://localhost:3000/api/chats', {name:isName, message: chatMsg}).done(function (data){
+			$.post('/api/chats', {name:isName, message: chatMsg}).done(function (data){
 				io.emit("send", data);
 			});
 
