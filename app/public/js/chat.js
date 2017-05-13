@@ -25,7 +25,7 @@ $(function () {
 
 	
 
-	$.getJSON('http://localhost:3000/api/chats').done(function (data) {
+	$.getJSON('/api/chats').done(function (data) {
 		data.forEach(function(element) {
 			$('#chat-messages').append(
 				'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">'+element.name+'</span></div><div class="message-body"><p>'+element.message+'</p><div class="message-date">'+element.date.toLocaleString().slice(11, 19)+'</div></div></div></li>');
