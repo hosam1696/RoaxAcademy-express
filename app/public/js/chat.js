@@ -51,9 +51,7 @@ $(function () {
 
 	var io = io();
 
-	io.on("connect", function() {
-		console.log('might be connected..');
-	});
+	
 	
 	io.on('disconnection', function () {
 		localStorage.removeItem('name');
@@ -92,6 +90,7 @@ $(function () {
 		var name = '';
 		if (e.which == 16) {
 			name = $(this).val();
+			localStorage.setItem('name', name);
 		}
 		console.log(name);
 		localStorage.setItem('name', name);
