@@ -13,15 +13,23 @@
 /*var chatBody = document.getElementById('chat-body');
 console.log(chatBody, chatBody.scrollTop);
 
-	chatBody.scrollTop = 26;*/
+	chatBody.scrollTop = 26;
 
 var chatBody = document.getElementById('chat-body');
-
 chatBody.scrollTop = chatBody.scrollHeight - chatBody.offsetHeight;
+*/
+
+
 $(function () {
+
+	var chatSend = $('.chat-message-send');
+	var isName = localStorage.getItem('name');
+
+	$('.chat-message-send:disabled').css('background-color', '#ccc');
 	/*
 	console.log($('#chat-body').prop('scrollHeight'), $('#chat-body').height())
 	$('#chat-body').scrollTop('100px');*/
+
 
 	$('#chat-body').scrollTop($('#chat-body').prop('scrollHeight') - $('#chat-body').innerHeight());
 
@@ -59,12 +67,14 @@ $(function () {
 
 
 	//localStorage.removeItem('name');
-	var isName = localStorage.getItem('name');
+	
 	if(isName) {
+		chatSend.attr('disabled', false);
 		$('.chat-message-name').val(isName);
 		$('.name-checker-found').text(isName);
 		$('.name-checker').fadeOut(0);
 	} else {
+		chatSend.attr('disabled', true);
 		$('#name-checked').fadeOut(0);
 	}
 	$('.chat-message-name').on('keyup', function(e){
@@ -77,7 +87,7 @@ $(function () {
 	});
 
 
-	$('.chat-message-send').on('click', function(e){
+	chatSend.on('click', function(e){
 		var chatMsg = $('.chat-message-control').val();
 		if(chatMsg && isName) {
 			e.preventDefault();
