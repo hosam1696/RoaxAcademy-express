@@ -13,6 +13,16 @@ header {
     box-shadow: inset 0 15px 5px #112334,inset 0 20px 0 #0c1622,inset 0 -10px 5px #112334;
     position: relative;
 }
+.leave-chat:hover {
+    cursor: pointer
+}
+.leave-chat {
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 2px;
+    background-color: rgb(206, 13, 13);
+    color: #eee
+}
 .padding {
     padding: 10px 12px;
     border-radius: 4px;
@@ -477,6 +487,24 @@ button#show-speakers:hover:before{
     position: absolute;
     top: 12px;
     right: 14px;
+}
+
+#loader {
+    display: block;
+    margin: 10px auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border-top: 2px solid rgb(182, 4, 4);
+    animation: load 1s linear infinite backwards;
+}
+@keyframes load {
+    from {transform: rotate(0)}
+    to {transform: rotate(360deg)}
+}
+#chat-bot #chat-form .chat-message-send:disabled {
+    background-color: #ccc;
+    cursor: not-allowed
 }
 #name-checked {
     margin: 25px auto;

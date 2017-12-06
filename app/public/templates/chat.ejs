@@ -14,23 +14,24 @@
 
 
 <div class="container">
-
+<br>
     <!--chat name form -->
     <section class="center-block jumbotron text-center name-checker">
-        <form action="">
+        
             <h2 class="chat-name-title">Enter Your name</h2>
             <input type="text" class="chat-message-name" placeholder="type your name ..">
-        </form>
+        
     </section>
 
     <section class="text-center" id="name-checked">
-        <h1>Welcome back <span class="text-primary name-checker-found"></span></h1>
+        <h1>Welcome <span class="text-primary name-checker-found"></span>&nbsp; <span class="leave-chat">leave</span></h1>
     </section>
 
     <!--chat Box -->
     <section id="chat-bot">
         <div class="chat-title"><h4>ChatBot</h4></div>
         <div id="chat-body">
+            <div id="loader"></div>
             <ul id="chat-messages">
                 <!-- placeholder for a single message 
                 <li>

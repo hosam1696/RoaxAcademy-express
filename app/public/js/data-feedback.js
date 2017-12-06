@@ -14,11 +14,12 @@ $(function () {
 				message: msg,
 				date: Date.now()
 			}).done(function(data) {
-				$('#feedback .most-recent').append(`\
+				
+				$('#feedback .most-recent').prepend(`\
 					<blockquote class="jumbtron">
-					<p> &quot; ${data.message} &quot;</p>
+					<p> &quot; ${donData.message} &quot;</p>
 				<cite>
-	                <small><i class="glyphicon glyphicon-comment text-muted "></i> ${data.name}  &nbsp; | &nbsp;  &nbsp; ${data.date.toLocaleString()}</small></cite>
+	                <small><i class="glyphicon glyphicon-comment text-muted "></i> ${donData.name}  &nbsp; | &nbsp;  &nbsp; ${new Date(donData.date).toDateString()}</small></cite>
 					</blockquote>`);
 
 				});
@@ -28,14 +29,14 @@ $(function () {
 	function getData() {
 		$.getJSON('/api/feedbacks', function (data) {
 			let feedbacksBody = $('#feedback .most-recent');
-
+			data = data.reverse();
 			data.forEach(function(data){
-				console.log(data);
+				
 				feedbacksBody.html(feedbacksBody.html()+ `
 			<blockquote class="jumbtron">
 	            <p> &quot; ${data.message} &quot;</p>
 	            <cite>
-	                <small><i class="glyphicon glyphicon-comment text-muted "></i> ${data.name}  &nbsp; | &nbsp;  &nbsp; ${data.date.toLocaleString()}</small></cite>
+	                <small><i class="glyphicon glyphicon-comment text-muted "></i> ${data.name}  &nbsp; | &nbsp;  &nbsp; ${new Date(data.date).toDateString()}</small></cite>
 	        </blockquote>
 			`);
 			})
