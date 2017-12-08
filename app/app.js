@@ -12,7 +12,7 @@ let fs = require("fs");
 let app = express();
 let ioserver = require('http').Server(app);
 let io = require('socket.io')(ioserver, {serveClient: true});
-
+const users = [];
 // connect to mongodb
 let mongoose = require('mongoose');
 mongoose.connect("mongodb://hosam:hoss161996@ds133281.mlab.com:33281/anode");
@@ -64,16 +64,19 @@ ioserver.listen(app.get('port'), function (err) {
 // attach socket io middleware
 
 io.on('connection', function (socket) {
-
-	console.log('someone connected..');
-	socket.emit("someoneConnected");
-
 	// listen for diconnect event on the server side
-	socket.on('disconnect', function () {
-		console.log('someone leaves..');
-		socket.emit('disconnection');
+	socket.on('disconnect', function (user) {
+		console.log('someone leaves..> ', user);
+		users.splice(users.indexOf(user),1);
+		socket.broadcast.emit('users:online', users);
 	});
-
+	socket.emit('users:online', users);
+	socket.on('user:in', user=>{
+		console.log('new user '+ user+ ' has been added');
+		if (~~users.indexOf(user))
+			users.push(user);
+		socket.broadcast.emit('users:online', users);
+	})
 	socket.on("send", function (data) {
 		console.log(data);
 		socket.broadcast.emit('chat-message', data)
