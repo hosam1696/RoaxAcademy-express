@@ -451,7 +451,7 @@ button#show-speakers:hover:before{
  }
  #chat-bot .chat-title h4 {
      color: #333;
-     text-shadow: 1px 1px #eee;
+     /*text-shadow: 1px 1px #eee;*/
      font-weight: bold;
  }
  #chat-bot #chat-body {
