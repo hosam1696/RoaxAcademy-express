@@ -555,7 +555,7 @@ button#show-speakers:hover:before{
     /* background-color: aqua; */
     display: block;
     position: absolute;
-    right: 50px;
+    right: 115px;;
 }
 #online-users > h4{
     margin-top: 0px !important;
