@@ -9,16 +9,26 @@ $.getJSON('/api/chats').done(function (data) {
 	$('#loader').hide();
 	data.forEach(function (element) {
 		$('#chat-messages').append(
-			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + element.name + '</span></div><div class="message-body"><p>' + element.message + '</p><div class="message-date">' + moment(element.date).format('h:mm:ss a, Do MMMM YYYY')+ '</div></div></div></li>');
+			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"><i class="fa fa-user"></i></div><span class="person-name">' + element.name + '</span></div><div class="message-body"><p>' + element.message + '</p><div class="message-date">' + moment(element.date).format('h:mm:ss a, Do MMMM YYYY') + '</div></div></div></li>');
 	}, this);
 	chatBody.scrollTop(chatBody.prop('scrollHeight') - chatBody.innerHeight());
 
-	$('#online-users').css('top', chatBody.prop('scrollHeight') - chatBody.innerHeight())
+	$('#online-users').css('top', chatBody.prop('scrollHeight') - chatBody.innerHeight());
 });
 
 
 
 function initChat() {
+
+	io.on('get:users', function (users) {
+		let storedUser = localStorage.getItem('username');
+		let userList = [...new Set(users)].map(function (user) {
+			return storedUser === user ? '' : '<li><span></span>' + user + '</li>'
+		});
+		console.log(storedUser, userList);
+		$('#onusers-list').html((storedUser ? '<li><span></span> you ~ ' + storedUser + '</li>' : '') + userList.join(''));
+
+	});
 	io.on('users:online', users => {
 		console.log('online users', users);
 		if (users.length > 0) {
@@ -27,7 +37,7 @@ function initChat() {
 				return username === user ? '' : '<li><span></span>' + user + '</li>'
 			});
 
-			$('#onusers-list').html('<li><span></span> you ~ ' + localStorage.getItem('username') + '</li>' + userList);
+			$('#onusers-list').html((username ? '<li><span></span> you ~ ' + username + '</li>' : '') + userList.join(''));
 		}
 	});
 
@@ -45,13 +55,7 @@ function initChat() {
 		}
 	});
 
-	io.on('chat-message', function (data) {
-		console.log(data);
-		$('#chat-messages').append(
-			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + data.name + '</span></div><div class="message-body"><p>' + data.message + '</p><div class="message-date">' + moment(data.date).format('h:mm:ss a, Do MMMM YYYY') + '</div></div></div></li>');
 
-		chatBody.scrollTop(chatBody.prop('scrollHeight') - chatBody.innerHeight());
-	});
 
 	$('.chat-message-send:disabled').css({
 		'background-color': '#ccc',
@@ -60,6 +64,15 @@ function initChat() {
 
 }
 
+initChat();
+
+io.on('chat-message', function (data) {
+	console.log(data);
+	$('#chat-messages').append(
+		'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"><i class="fa fa-user"></i></div><span class="person-name">' + data.name + '</span></div><div class="message-body"><p>' + data.message + '</p><div class="message-date">' + moment(data.date).format('h:mm:ss a, Do MMMM YYYY') + '</div></div></div></li>');
+	msgTypingIndicator.css('opacity', 0);
+	chatBody.scrollTop(chatBody.prop('scrollHeight') - chatBody.innerHeight());
+});
 // listen on input event
 msgInput.on('keydown', (event) => {
 	let inputVal = msgInput.val();
@@ -79,6 +92,7 @@ function initName() {
 }
 $('.leave-chat').on('click', ev => {
 	let username = localStorage.getItem('username');
+	$('#chat-bot').fadeOut();
 	localStorage.removeItem('username');
 	chatSend.attr('disabled', true);
 	$('.name-checker').show();
@@ -93,16 +107,20 @@ $('.chat-message-name').on('keydown', function (e) {
 		initChat();
 		io.emit('user:in', localStorage.getItem('username'));
 		chatSend.removeAttr('disabled');
+		$('#chat-bot').fadeIn();
 	}
 });
 
 if (isName) {
+	$('#chat-bot').fadeIn();
 	initName();
 	io.emit('user:in', localStorage.getItem('username'));
 	initChat();
 } else {
 	chatSend.attr('disabled', true);
 	$('#name-checked').fadeOut(0);
+
+	$('#chat-bot').fadeOut(0);
 }
 
 //localStorage.removeItem('name');
@@ -113,14 +131,14 @@ function sendclick(e) {
 	if (chatMsg && isName) {
 		e.preventDefault();
 		//console.log(chatMsg);
-
+		msgTypingIndicator.css('opacity', 0);
 		$('#chat-messages').append(
-			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + isName + '</span></div><div class="message-body"><p>' + chatMsg + '</p><div class="message-date">' + new Date(Date.now()).toLocaleString().slice(11, 19) + '</div></div></div></li>');
+			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"><i class="fa fa-user"></i></div><span class="person-name">' + isName + '</span></div><div class="message-body"><p>' + chatMsg + '</p><div class="message-date">' + new Date(Date.now()).toLocaleString().slice(11, 19) + '</div></div></div></li>');
 		chatBody.scrollTop($(this).scrollMaxY);
 		console.log(chatBody.scrollTop());
 		msgInput.val('');
 		$.post('/api/chats', {
-			name: isName,
+			name: localStorage.getItem('username'),
 			message: chatMsg
 		}).done(function (data) {
 			io.emit("send", data);
@@ -142,7 +160,7 @@ $('.chat-message-send').on('click', function (e) {
 		//console.log(chatMsg);
 
 		$('#chat-messages').append(
-			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + userName + '</span></div><div class="message-body"><p>' + chatMsg + '</p><div class="message-date">' + moment().format('h:mm:ss a, Do MMMM YYYY') + '</div></div></div></li>');
+			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"><i class="fa fa-user"></i></div><span class="person-name">' + userName + '</span></div><div class="message-body"><p>' + chatMsg + '</p><div class="message-date">' + moment().format('h:mm:ss a, Do MMMM YYYY') + '</div></div></div></li>');
 		chatBody.scrollTop($(this).scrollMaxY);
 		console.log(chatBody.scrollTop());
 		msgInput.val('');
@@ -159,7 +177,7 @@ $('.chat-message-send').on('click', function (e) {
 	//console.log(e);
 	let scrollVal = chatBody.prop('scrollHeight') - chatBody.innerHeight();
 	chatBody.scrollTop(scrollVal);
-	
+
 	$('#online-users').css('top', scrollVal)
 })
 

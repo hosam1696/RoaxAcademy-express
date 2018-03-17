@@ -407,9 +407,17 @@ button#show-speakers:hover:before{
     height:35px;
     background-color: #ddd;
     box-shadow: 2px 2px 5px #ccc;
+    line-height: 37px;
+
     /* box-shadow: inset 0 0 0 5px #eee,inset 0 0 0 10px #ddd, inset 0 0 0 15px #888; */
     border-radius: 50%;
     margin: 3px auto
+}
+
+.single-message .person-avatar .img-placeholder i {
+    font-size: 20px;
+    margin-left: 2px;
+    color: #607D8B;
 }
 .user-type-msg {
     position: absolute;
@@ -417,7 +425,16 @@ button#show-speakers:hover:before{
     color: #666 !important;
     opacity: 0;
     z-index: 99;
-    background: #eee
+    background: #eee;
+    padding: 4px;
+    border-radius: 0 6px 0 0;
+    background-color: #fff;
+    box-shadow: 2px 2px 13px #ccc;
+    right: 4px;
+}
+.user-type-msg span {
+    font-weight: bold;
+    color: #1b8fff
 }
 .message-body {
     display: inline-block;
@@ -452,6 +469,9 @@ button#show-speakers:hover:before{
 }
 
 /*chat bot*/
+#chat-messages {
+    padding-bottom: 10px !important
+}
 #chat-bot {
     height: 500px;
     width: 100%;

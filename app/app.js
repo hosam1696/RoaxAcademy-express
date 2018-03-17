@@ -70,6 +70,7 @@ io.on('connection', function (socket) {
 		users.splice(users.indexOf(user),1);
 		socket.broadcast.emit('users:online', users);
 	});
+	socket.emit('get:users', users);
 	socket.emit('users:online', users);
 	socket.on('user:in', user=>{
 		console.log('new user '+ user+ ' has been added');
