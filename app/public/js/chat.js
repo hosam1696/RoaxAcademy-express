@@ -1,74 +1,56 @@
+var io = io();
+const isName = localStorage.getItem('username');
+const chatSend = $('.chat-message-send');
+const msgInput = $('.chat-message-control');
+const msgTypingIndicator = $('.user-type-msg');
+const chatBody = $('#chat-body');
+// Get chat History
+$.getJSON('/api/chats').done(function (data) {
+	$('#loader').hide();
+	data.forEach(function (element) {
+		$('#chat-messages').append(
+			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + element.name + '</span></div><div class="message-body"><p>' + element.message + '</p><div class="message-date">' + moment(element.date).format('h:mm:ss a, Do MMMM YYYY')+ '</div></div></div></li>');
+	}, this);
+	chatBody.scrollTop(chatBody.prop('scrollHeight') - chatBody.innerHeight());
+
+	$('#online-users').css('top', chatBody.prop('scrollHeight') - chatBody.innerHeight())
+});
 
 
-	var io = io();
-	var isName = localStorage.getItem('username');
-	var chatSend = $('.chat-message-send');
 
-	// Get chat History
-	$.getJSON('/api/chats').done(function (data) {
-		$('#loader').hide();
-		data.forEach(function (element) {
-			$('#chat-messages').append(
-				'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + element.name + '</span></div><div class="message-body"><p>' + element.message + '</p><div class="message-date">' + element.date.toLocaleString().slice(11, 19) + '</div></div></div></li>');
-		}, this);
-		$('#chat-body').scrollTop($('#chat-body').prop('scrollHeight') - $('#chat-body').innerHeight());
-	});
-
+function initChat() {
 	io.on('users:online', users => {
 		console.log('online users', users);
-		if (users.length >0 ) {
-			var username = localStorage.getItem('username');	
-			var userList = users.map(function(user){
-				return username === user?'':'<li><span></span>'+user+'</li>' 
+		if (users.length > 0) {
+			let username = localStorage.getItem('username');
+			let userList = users.map(function (user) {
+				return username === user ? '' : '<li><span></span>' + user + '</li>'
 			});
-			
-			$('#onusers-list').html(userList);
+
+			$('#onusers-list').html('<li><span></span> you ~ ' + localStorage.getItem('username') + '</li>' + userList);
 		}
 	});
-
-	function initName() {
-		chatSend.attr('disabled', false);
-		$('.chat-message-name').val(isName);
-		$('.name-checker-found').text(localStorage.getItem('username'));
-		$('.name-checker').hide();
-		$('#name-checked').show();
-	}
-	$('.leave-chat').on('click', ev => {
-		var username = localStorage.getItem('username');
-		localStorage.removeItem('username');
-		chatSend.attr('disabled', true);
-		$('.name-checker').show();
-		$('#name-checked').hide();
-		io.emit('disconnect', username);
-	})
-	$('.chat-message-name').on('keydown', function (e) {
-		if (e.keyCode == 13) {
-			e.preventDefault();
-			localStorage.setItem('username', $(this).val());
-			initName();
-			io.emit('user:in', localStorage.getItem('username'));
-		}
-	});
-
-	if (isName) {
-		initName();
-		io.emit('user:in', localStorage.getItem('username'));
-	} else {
-		chatSend.attr('disabled', true);
-		$('#name-checked').fadeOut(0);
-	}
 
 	io.on('someoneConnected', function () {
 		console.log(localStorage.getItem('username') + " connected")
 	});
 
+	io.on('chat:typying', function (user, inputVal) {
+		if (inputVal.length > 1 && inputVal.trim()) {
+			$('.user-type-msg').css('bottom', -chatBody.prop('scrollHeight') + chatBody.innerHeight());
+			msgTypingIndicator.css('opacity', 1);
+			msgTypingIndicator.find('span').text(user);
+		} else {
+			msgTypingIndicator.css('opacity', 0);
+		}
+	});
+
 	io.on('chat-message', function (data) {
 		console.log(data);
-
 		$('#chat-messages').append(
-			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + data.name + '</span></div><div class="message-body"><p>' + data.message + '</p><div class="message-date">1/2/1976</div></div></div></li>');
+			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + data.name + '</span></div><div class="message-body"><p>' + data.message + '</p><div class="message-date">' + moment(data.date).format('h:mm:ss a, Do MMMM YYYY') + '</div></div></div></li>');
 
-		$('#chat-body').scrollTop($('#chat-body').prop('scrollHeight') - $('#chat-body').innerHeight());
+		chatBody.scrollTop(chatBody.prop('scrollHeight') - chatBody.innerHeight());
 	});
 
 	$('.chat-message-send:disabled').css({
@@ -76,60 +58,110 @@
 		'cursor': 'not-allowed'
 	});
 
-	//localStorage.removeItem('name');
+}
 
-	function sendclick(e) {
-
-		var chatMsg = $('.chat-message-control').val();
-		if (chatMsg && isName) {
-			e.preventDefault();
-			//console.log(chatMsg);
-
-			$('#chat-messages').append(
-				'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + isName + '</span></div><div class="message-body"><p>' + chatMsg + '</p><div class="message-date">' + new Date(Date.now()).toLocaleString().slice(11, 19) + '</div></div></div></li>');
-			$('#chat-body').scrollTop($(this).scrollMaxY);
-			console.log($('#chat-body').scrollTop());
-			$('.chat-message-control').val('');
-			$.post('/api/chats', {
-				name: isName,
-				message: chatMsg
-			}).done(function (data) {
-				io.emit("send", data);
-			});
-
-		} else {
-			$('.chat-message-control').focus();
-		}
-		//console.log(e);
-
-
+// listen on input event
+msgInput.on('keydown', (event) => {
+	let inputVal = msgInput.val();
+	if (inputVal && inputVal.trim()) {
+		io.emit('user:typing', localStorage.getItem('username'), inputVal);
 	}
+});
 
-	$('.chat-message-send').on('click', function (e) {
-		var userName = localStorage.getItem('username');
-		var chatMsg = $('.chat-message-control').val();
-		if (chatMsg && userName) {
-			e.preventDefault();
-			//console.log(chatMsg);
 
-			$('#chat-messages').append(
-				'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + userName + '</span></div><div class="message-body"><p>' + chatMsg + '</p><div class="message-date">' + new Date(Date.now()).toLocaleString().slice(11, 19) + '</div></div></div></li>');
-			$('#chat-body').scrollTop($(this).scrollMaxY);
-			console.log($('#chat-body').scrollTop());
-			$('.chat-message-control').val('');
-			$.post('/api/chats', {
-				name: isName,
-				message: chatMsg
-			}).done(function (data) {
-				io.emit("send", data);
-			});
 
-		} else {
-			$('.chat-message-control').focus();
-		}
-		//console.log(e);
-		$('#chat-body').scrollTop($('#chat-body').prop('scrollHeight') - $('#chat-body').innerHeight());
-	})
+function initName() {
+	chatSend.attr('disabled', false);
+	$('.chat-message-name').val(isName);
+	$('.name-checker-found').text(localStorage.getItem('username'));
+	$('.name-checker').hide();
+	$('#name-checked').show();
+}
+$('.leave-chat').on('click', ev => {
+	let username = localStorage.getItem('username');
+	localStorage.removeItem('username');
+	chatSend.attr('disabled', true);
+	$('.name-checker').show();
+	$('#name-checked').hide();
+	io.emit('disconnect', username);
+})
+$('.chat-message-name').on('keydown', function (e) {
+	if (e.keyCode == 13 && $('.chat-message-name').val()) {
+		e.preventDefault();
+		localStorage.setItem('username', $(this).val());
+		initName();
+		initChat();
+		io.emit('user:in', localStorage.getItem('username'));
+		chatSend.removeAttr('disabled');
+	}
+});
+
+if (isName) {
+	initName();
+	io.emit('user:in', localStorage.getItem('username'));
+	initChat();
+} else {
+	chatSend.attr('disabled', true);
+	$('#name-checked').fadeOut(0);
+}
+
+//localStorage.removeItem('name');
+
+function sendclick(e) {
+
+	let chatMsg = msgInput.val();
+	if (chatMsg && isName) {
+		e.preventDefault();
+		//console.log(chatMsg);
+
+		$('#chat-messages').append(
+			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + isName + '</span></div><div class="message-body"><p>' + chatMsg + '</p><div class="message-date">' + new Date(Date.now()).toLocaleString().slice(11, 19) + '</div></div></div></li>');
+		chatBody.scrollTop($(this).scrollMaxY);
+		console.log(chatBody.scrollTop());
+		msgInput.val('');
+		$.post('/api/chats', {
+			name: isName,
+			message: chatMsg
+		}).done(function (data) {
+			io.emit("send", data);
+		});
+
+	} else {
+		msgInput.focus();
+	}
+	//console.log(e);
+
+
+}
+
+$('.chat-message-send').on('click', function (e) {
+	let userName = localStorage.getItem('username');
+	let chatMsg = msgInput.val();
+	if (chatMsg && userName) {
+		e.preventDefault();
+		//console.log(chatMsg);
+
+		$('#chat-messages').append(
+			'<li><div class="single-message"><div class="person-avatar"><div class="img-placeholder"></div><span class="person-name">' + userName + '</span></div><div class="message-body"><p>' + chatMsg + '</p><div class="message-date">' + moment().format('h:mm:ss a, Do MMMM YYYY') + '</div></div></div></li>');
+		chatBody.scrollTop($(this).scrollMaxY);
+		console.log(chatBody.scrollTop());
+		msgInput.val('');
+		$.post('/api/chats', {
+			name: isName,
+			message: chatMsg
+		}).done(function (data) {
+			io.emit("send", data);
+		});
+
+	} else {
+		msgInput.focus();
+	}
+	//console.log(e);
+	let scrollVal = chatBody.prop('scrollHeight') - chatBody.innerHeight();
+	chatBody.scrollTop(scrollVal);
+	
+	$('#online-users').css('top', scrollVal)
+})
 
 
 

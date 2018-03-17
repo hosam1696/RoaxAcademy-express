@@ -34,8 +34,7 @@
             <div id="loader"></div>
             <div id="online-users">
                 <h4>Online Users</h4>
-                <ul id="onusers-list">
-                </ul>
+                <ul id="onusers-list"></ul>
             </div>
             <ul id="chat-messages">
                 <!-- placeholder for a single message 
@@ -55,6 +54,7 @@
                     </div>
                 </li>
                 -->
+                <li class="user-type-msg"><span></span> is typying...</li>
             </ul>
         </div>
         <div id="chat-form">
@@ -72,8 +72,8 @@
 
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>-->
 <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/chat.js"></script>
-
+<script src="/js/moment.js"></script>
+<script src="/js/chat.js"></script>
 <%}%>
 <script src="/reload/reload.js"></script>
 </body>

@@ -81,7 +81,14 @@ io.on('connection', function (socket) {
 		console.log(data);
 		socket.broadcast.emit('chat-message', data)
 	});
+
+	socket.on('user:typing', function (username,inputVal) {
+		console.log('server user is typing', username);
+		socket.broadcast.emit('chat:typying', username, inputVal);
+	})
 });
+
+
 
 // reload the page while developing
 

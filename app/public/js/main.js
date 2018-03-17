@@ -7,6 +7,6 @@ $(function(){
 
 
 		var info = $(this).data('info');
-		$('#icons-info').text(info).fadeIn()
+		$('#icons-info').html('<a href=\"'+info+'\" target="_blank">'+info+'</a>').fadeIn()
 	});
 });
