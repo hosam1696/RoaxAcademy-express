@@ -67,16 +67,16 @@ io.on('connection', function (socket) {
 	// listen for diconnect event on the server side
 	socket.on('disconnect', function (user) {
 		console.log('someone leaves..> ', user);
-		users.splice(users.indexOf(user),1);
-		socket.broadcast.emit('users:online', users);
+		users.splice(users.indexOf(user), 1);
+		socket.broadcast.emit('users:online', [...new Set(users)]);
 	});
 	socket.emit('get:users', users);
-	socket.emit('users:online', users);
+	socket.emit('users:online', [...new Set(users)]);
 	socket.on('user:in', user=>{
 		console.log('new user '+ user+ ' has been added');
 		if (~~users.indexOf(user))
 			users.push(user);
-		socket.broadcast.emit('users:online', users);
+		socket.broadcast.emit('users:online', [...new Set(users)]);
 	})
 	socket.on("send", function (data) {
 		console.log(data);
