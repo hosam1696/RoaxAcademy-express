@@ -165,7 +165,7 @@ $('.chat-message-send').on('click', function (e) {
 		console.log(chatBody.scrollTop());
 		msgInput.val('');
 		$.post('/api/chats', {
-			name: isName,
+			name: localStorage.getItem('username'),
 			message: chatMsg
 		}).done(function (data) {
 			io.emit("send", data);
