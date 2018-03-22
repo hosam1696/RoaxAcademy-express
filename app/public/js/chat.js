@@ -13,10 +13,13 @@ $.getJSON('/api/chats').done(function (data) {
 	}, this);
 	chatBody.scrollTop(chatBody.prop('scrollHeight') - chatBody.innerHeight());
 
-	//$('#online-users').css('top', chatBody.prop('scrollHeight') - chatBody.innerHeight());
+	$('#online-users').css('top', chatBody.prop('scrollHeight') - chatBody.innerHeight());
 });
 
-
+$(chatBody).on('scroll', (e) => {
+	
+	$('#online-users').css('top', $(chatBody).scrollTop());
+});
 
 function initChat() {
 

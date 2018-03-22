@@ -3,7 +3,7 @@
 // Import events module
 let express = require('express');
 let bodyParser = require('body-parser');
-let reload = require('reload');
+// let reload = require('reload');
 let passport = require('passport');
 let cookies = require('cookie-parser');
 
@@ -93,4 +93,4 @@ io.on('connection', function (socket) {
 
 // reload the page while developing
 
-reload(ioserver, app);
+// reload(ioserver, app);
