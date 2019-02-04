@@ -3,6 +3,7 @@
 // Import events module
 let express = require('express');
 let bodyParser = require('body-parser');
+let cors = require('cors');
 // let reload = require('reload');
 let passport = require('passport');
 let cookies = require('cookie-parser');
@@ -37,6 +38,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cookies());
+app.use(cors());
 app.use(passport.initialize());
 app.use(passport.session());
 // let express use templates and routers
