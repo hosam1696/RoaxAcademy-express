@@ -84,12 +84,12 @@ router.post('/sendemail', (req, res) => {
 	if (requestBody.name && requestBody.mobile && requestBody.kind) {
 
 		mainMailer(output).then((r)=>{
-			res.json({
-				status: true,
-				message: 'Email Sent',
-				extra: r
-			});
-		})
+
+		});
+		res.json({
+			status: true,
+			message: 'Email Sent'
+		});
 		
 	} else {
 		res.json({
