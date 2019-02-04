@@ -12,7 +12,7 @@ $(function(){
 
 	$('#send-mail').click(()=>{
 		$.post('/api/sendemail', {
-			// name: 'محمد ماهر',
+			name: 'طالب ',
 			email: 'test@gmail.com',
 			mobile: '+20789667456',
 			kind: 'معلم',

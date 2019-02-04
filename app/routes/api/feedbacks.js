@@ -84,7 +84,7 @@ router.post('/sendemail', (req, res) => {
 	if (requestBody.name && requestBody.mobile && requestBody.kind) {
 
 		mainMailer(output).then((r)=>{
-
+			console.log(r);
 		});
 		res.json({
 			status: true,
